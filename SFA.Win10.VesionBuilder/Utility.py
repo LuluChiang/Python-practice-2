@@ -162,7 +162,7 @@ def utBuildFolderToISO(tar_path, iso_name):
         utISO_add_folder(iso, tar_path)
         iso.write(iso_name + ".iso")
         iso.close()
-        Dbg_print("Build "+ iso_name + ".iso OK")
+        Dbg_print("Build "+ iso_name + ".iso to: " + tar_path)
     except Exception as e:
         Dbg_print("utBuildFolderToISO(): Err")
 

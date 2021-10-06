@@ -2,11 +2,12 @@
 # Todo list:
 # 1. Calculate SHA256 for authenticate (hard)
 # 2. for other customers
+#       => select config
 # 3. UI optimize 
 # 4. delete temp folder
 # 
 #  
-# 紀錄用到的技術:
+# Module used:
 # 1. Tkinker: GUI
 #     1. Frame
 #     2. Button
@@ -29,6 +30,7 @@
 # For GUI
 import tkinter as tk 
 from tkinter import filedialog
+from datetime import datetime
 
 # File processing
 import os
@@ -65,13 +67,15 @@ def buildISO():
     Utility.DeleteTargetFileinConfig("DeleteFile_Install")
     Utility.utMkdir(INSTALL_TEMP_PATH)
     shutil.make_archive(INSTALL_TEMP_PATH + "/archive", 'zip', "../Python", "bin")  #zip
+    Utility.Dbg_print('Make Install version to: '+ INSTALL_TEMP_PATH + "/archive")
     Utility.utBuildFolderToISO(INSTALL_TEMP_PATH, InsDIR)
 
 
     # Then Build Update CD, and it will also exclude the file in [DeleteFile_Install] 
     Utility.DeleteTargetFileinConfig("DeleteFile_Update")
     Utility.utMkdir(UPDATE_TEMP_PATH)
-    shutil.make_archive(UPDATE_TEMP_PATH + "/archive", 'zip', "../Python", "bin")
+    shutil.make_archive(UPDATE_TEMP_PATH + "/Win10/archive", 'zip', "../Python", "bin")
+    Utility.Dbg_print('Make Update version to: '+ UPDATE_TEMP_PATH + "/Win10/archive")
     Utility.utBuildFolderToISO(UPDATE_TEMP_PATH, UpdDIR)
     
     frame_step3["bg"] = COLOR_FRAMEBG_OK
@@ -88,7 +92,10 @@ def openfile():
         filetypes = (("zip files","*.zip"),("all files","*.*")))
         strent2.set(path_archive)
         if path_archive == "":
+            Utility.Dbg_print('User select nothing')
             return
+        else:
+            Utility.Dbg_print('Select: ' + path_archive)
 
         # delete bin
         if os.path.isdir("bin"):
@@ -126,43 +133,45 @@ def openfile():
 
 mainWindow = tk.Tk()
 mainWindow.title("Win10 Version Builder   (" + __file__ + ")")
-mainWindow.geometry('1000x400')
+mainWindow.geometry('900x300')
 mainWindow.resizable(False, False)
 strent2 = tk.StringVar()
 
 # Frame 1 
 frame_step1 = tk.Frame(mainWindow, bg=COLOR_FRAMEBG_OK, width=500)
-frame_step1.pack(padx=10, pady=10) 
+frame_step1.pack(padx=0, pady=0) 
 
-label_step1 = tk.Label(frame_step1, text="Step 1. Enter Version Number", font=('Arial', 12))
-label_step1.pack(side=tk.LEFT, padx=10, pady=10)
+label_step1 = tk.Label(frame_step1, text="Step 1. Enter Version Number", font=('Arial', 14))
+label_step1.pack(side=tk.LEFT, padx=17, pady=10)
 
-ent_version = tk.Entry(frame_step1, width=20, font=('Arial', 11))
+ent_version = tk.Entry(frame_step1, width=25, font=('Arial', 14))
 ent_version.pack(side=tk.LEFT, padx=17, pady=7) 
-ent_version.insert(0, "1.300.6432_20210922")
+now = datetime.now()
+str_date = now.strftime("%Y%m%d")
+ent_version.insert(0, "1.300.6432_"+str_date)
 
 # Frame 2 
 frame_step2 = tk.Frame(mainWindow, bg=COLOR_FRAMEBG_UNDO)
-frame_step2.pack(padx=10, pady=10) 
+frame_step2.pack(padx=0, pady=0) 
 
-label_step2 = tk.Label(frame_step2, text="Step 2. Select archive.zip and Set version number", font=('Arial', 12))
-label_step2.pack(side=tk.TOP, padx=10, pady=5)
+label_step2 = tk.Label(frame_step2, text="Step 2. Select archive.zip and Set version number", font=('Arial', 14))
+label_step2.pack(side=tk.LEFT, padx=10, pady=5)
 
-btn1 = tk.Button(frame_step2, text="Select archive", bg='white', font=('Arial', 11), command=openfile)
+btn1 = tk.Button(frame_step2, text="Select archive", bg='white', font=('Arial', 14), command=openfile)
 btn1.pack(side=tk.LEFT, padx=10, pady=5)       
 
-ent2 = tk.Entry(frame_step2, textvariable=strent2, fg='black', width=100, font=('Arial', 11))
-ent2.pack(side=tk.LEFT, padx=17, pady=7) 
+ent2 = tk.Entry(frame_step2, textvariable=strent2, fg='black', width=60, font=('Arial', 14))
+ent2.pack( padx=10, pady=7) 
 ent2.insert(1, '(file path)')
 
 # Frame 3
 frame_step3 = tk.Frame(mainWindow, bg=COLOR_FRAMEBG_UNDO)
-frame_step3.pack(padx=10, pady=10) 
+frame_step3.pack(padx=10, pady=0) 
 
-label_step3 = tk.Label(frame_step3, text="Step 3. Build Install and Update ISO CD", font=('Arial', 12))
+label_step3 = tk.Label(frame_step3, text="Step 3. Build Install and Update ISO CD", font=('Arial', 14))
 label_step3.pack(side=tk.TOP, padx=10, pady=5)
 
-btn_buildVer = tk.Button(frame_step3, text="Build Version", bg='white', font=('Arial', 11), command=buildISO)
+btn_buildVer = tk.Button(frame_step3, text="Build Version", bg='white', font=('Arial', 14), command=buildISO)
 btn_buildVer.pack(side=tk.LEFT, padx=10, pady=10)  
 #btn_buildVer["state"] = "disabled"
     
