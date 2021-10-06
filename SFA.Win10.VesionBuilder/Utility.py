@@ -34,7 +34,8 @@ def GetKeyValueinConfig(key, section):
                         else:
                             inRightSection = False
                     elif line.find(key) == 0 and inRightSection:
-                        value = line[line.find("=") + 1:-1]               
+                        line = line.strip()
+                        value = line[line.find("=") + 1:]               
         else:           
             Dbg_print("Find no config.ini")  
         return value
@@ -173,21 +174,20 @@ def SHA256_String(sha256, strTemp):
     strTemp = str(strTemp).encode('utf-8')
     sha256 = hashlib.sha256()
     sha256.update(strTemp)
-    #print(sha256.hexdigest())
     return sha256
 
 
 
-sha256 = hashlib.sha256()
-Folder_path = "SFA_Win10_Install_/"#"bin2/"
+# sha256 = hashlib.sha256()
+# Folder_path = "SFA_Win10_Install_/"#"bin2/"
 
-files = os.listdir(Folder_path)
-for file in files:
-        print(file)
-        sha256 = SHA256_String(sha256, file)
-        print(sha256.hexdigest())
-        with open(Folder_path + file, "rb") as fp:
-            bfile = fp.read()   #read entire file as bytes
-            sha256.update(bfile)
-            print(sha256.hexdigest())
+# files = os.listdir(Folder_path)
+# for file in files:
+#         print(file)
+#         sha256 = SHA256_String(sha256, file)
+#         print(sha256.hexdigest())
+#         with open(Folder_path + file, "rb") as fp:
+#             bfile = fp.read()   #read entire file as bytes
+#             sha256.update(bfile)
+#             print(sha256.hexdigest())
 

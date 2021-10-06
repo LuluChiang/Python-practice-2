@@ -1,13 +1,9 @@
-# Version: 2021/10/2
+# Version: Python 3.9.7 64-bit
 # Todo list:
 # 1. Calculate SHA256 for authenticate (hard)
-# 2.
-# 3. build this project to .exe 
-# 4. for other customers
-# 5. verision control, like github
-# 6. UI optimize 
-# 7. trim the line in config 
-# 8. select diffierent config
+# 2. for other customers
+# 3. UI optimize 
+# 4. delete temp folder
 # 
 #  
 # 紀錄用到的技術:
@@ -22,8 +18,12 @@
 # 6. pycdlib: for building iso
 #       https://clalancette.github.io/pycdlib/
 #       py -m pip install pycdlib
+# 7. pyinstaller: package python project into a exe
+#       py -m pip install pyinstaller
+#       UPX is not available: UPX is not available, which means pyinstaller can not find upx.exe to encrypt exe file. 
+#           In order to fix it, we should download upx. Put upx.1 and upx.exe with this project in same path.
+#       Example: "pyinstall -F ./Builder.py
 #
-# 
 
 
 # For GUI
@@ -48,6 +48,14 @@ UPDATE_TEMP_PATH = Utility.GetKeyValueinConfig("UPDATE_TEMP_PATH", "InitPath")
 
 
 # function def
+def main():
+    if os.path.isfile(Utility.PATH_CONFIG):
+        Utility.utDeleLog()
+        Utility.Dbg_print("Builder Start")
+        mainWindow.mainloop() 
+    else:
+        Utility.Dbg_print("Find no config.ini") 
+
 def buildISO():
     InsDIR = INSTALL_TEMP_PATH + ent_version.get()
     UpdDIR = UPDATE_TEMP_PATH + ent_version.get()
@@ -67,6 +75,9 @@ def buildISO():
     Utility.utBuildFolderToISO(UPDATE_TEMP_PATH, UpdDIR)
     
     frame_step3["bg"] = COLOR_FRAMEBG_OK
+
+    #if detele temp folder checkbox
+
     return
 
     
@@ -158,7 +169,5 @@ btn_buildVer.pack(side=tk.LEFT, padx=10, pady=10)
 
 
 if __name__ == '__main__':
+    main() 
 
-    Utility.utDeleLog()
-    Utility.Dbg_print("Builder Start")
-    mainWindow.mainloop() 
