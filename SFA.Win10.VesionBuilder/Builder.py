@@ -35,6 +35,7 @@ from datetime import datetime
 # File processing
 import os
 import shutil
+from tkinter.constants import NSEW
 
 # Others
 import Utility
@@ -90,7 +91,6 @@ def openfile():
         # Get archive.zip and unzip 
         path_archive = filedialog.askopenfilename(parent=mainWindow, initialdir = INIT_PATH_ARCHIVE_ZIP,
         filetypes = (("zip files","*.zip"),("all files","*.*")))
-        strent2.set(path_archive)
         if path_archive == "":
             Utility.Dbg_print('User select nothing')
             return
@@ -131,48 +131,46 @@ def openfile():
         Utility.Dbg_print("openfile(): Err")
 
 
+PADIN = 5
+PADOUT = 10
+
 mainWindow = tk.Tk()
 mainWindow.title("Win10 Version Builder   (" + __file__ + ")")
-mainWindow.geometry('900x300')
+mainWindow.geometry('700x250')
 mainWindow.resizable(False, False)
-strent2 = tk.StringVar()
 
 # Frame 1 
-frame_step1 = tk.Frame(mainWindow, bg=COLOR_FRAMEBG_OK, width=500)
-frame_step1.pack(padx=0, pady=0) 
+frame_step1 = tk.Frame(mainWindow, bg=COLOR_FRAMEBG_OK)
+frame_step1.grid(column=0, row=0)
 
 label_step1 = tk.Label(frame_step1, text="Step 1. Enter Version Number", font=('Arial', 14))
-label_step1.pack(side=tk.LEFT, padx=17, pady=10)
+label_step1.grid(column=0, row=0, ipadx = PADIN, ipady = PADIN, padx=PADOUT, pady=PADOUT)
 
-ent_version = tk.Entry(frame_step1, width=25, font=('Arial', 14))
-ent_version.pack(side=tk.LEFT, padx=17, pady=7) 
+ent_version = tk.Entry(frame_step1, width=24, font=('Arial', 14))
+ent_version.grid(column=1, row=0, ipadx = PADIN+5, ipady = PADIN, padx=PADOUT, pady=PADOUT)
 now = datetime.now()
 str_date = now.strftime("%Y%m%d")
 ent_version.insert(0, "1.300.6432_"+str_date)
 
 # Frame 2 
 frame_step2 = tk.Frame(mainWindow, bg=COLOR_FRAMEBG_UNDO)
-frame_step2.pack(padx=0, pady=0) 
+frame_step2.grid(column=0, row=1)
 
-label_step2 = tk.Label(frame_step2, text="Step 2. Select archive.zip and Set version number", font=('Arial', 14))
-label_step2.pack(side=tk.LEFT, padx=10, pady=5)
+label_step2 = tk.Label(frame_step2, text="Step 2. Select archive and Set version number ", font=('Arial', 14))
+label_step2.grid(column=0, row=0, ipadx = PADIN, ipady = PADIN, padx=PADOUT, pady=PADOUT)
 
 btn1 = tk.Button(frame_step2, text="Select archive", bg='white', font=('Arial', 14), command=openfile)
-btn1.pack(side=tk.LEFT, padx=10, pady=5)       
-
-ent2 = tk.Entry(frame_step2, textvariable=strent2, fg='black', width=60, font=('Arial', 14))
-ent2.pack( padx=10, pady=7) 
-ent2.insert(1, '(file path)')
+btn1.grid(column=1, row=0, ipadx = PADIN, ipady = PADIN, padx=PADOUT, pady=PADOUT)    
 
 # Frame 3
 frame_step3 = tk.Frame(mainWindow, bg=COLOR_FRAMEBG_UNDO)
-frame_step3.pack(padx=10, pady=0) 
+frame_step3.grid(column=0, row=2)
 
-label_step3 = tk.Label(frame_step3, text="Step 3. Build Install and Update ISO CD", font=('Arial', 14))
-label_step3.pack(side=tk.TOP, padx=10, pady=5)
+label_step3 = tk.Label(frame_step3, text="Step 3. Build Install and Update ISO CD            ", font=('Arial', 14))
+label_step3.grid(column=0, row=0, ipadx = PADIN+2, ipady = PADIN, padx=PADOUT, pady=PADOUT)
 
 btn_buildVer = tk.Button(frame_step3, text="Build Version", bg='white', font=('Arial', 14), command=buildISO)
-btn_buildVer.pack(side=tk.LEFT, padx=10, pady=10)  
+btn_buildVer.grid(column=1, row=0, ipadx = PADIN, ipady = PADIN, padx=PADOUT, pady=PADOUT)    
 #btn_buildVer["state"] = "disabled"
     
 
