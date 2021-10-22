@@ -4,7 +4,6 @@
 # 2. for other customers
 #       => select config
 # 3. UI optimize 
-# 4. delete temp folder
 # 
 #  
 # Module used:
@@ -46,8 +45,10 @@ import zip_func
 COLOR_FRAMEBG_UNDO = '#dbdbdb' 
 COLOR_FRAMEBG_OK = '#7ede73'
 INIT_PATH_ARCHIVE_ZIP = Utility.GetKeyValueinConfig("INIT_PATH_ARCHIVE_ZIP", "InitPath") 
+INIT_PATH_PE_SRC= Utility.GetKeyValueinConfig("INIT_PATH_PE", "InitPath") 
 INSTALL_TEMP_PATH = Utility.GetKeyValueinConfig("INSTALL_TEMP_PATH", "InitPath") 
 UPDATE_TEMP_PATH = Utility.GetKeyValueinConfig("UPDATE_TEMP_PATH", "InitPath") 
+PATH_PEINARCHIVE = Utility.GetKeyValueinConfig("PATH_PEINARCHIVE", "InitPath") 
 
 
 # function def
@@ -59,6 +60,10 @@ def main():
     else:
         Utility.Dbg_print("Find no config.ini") 
 
+def del_bin():
+    if os.path.isdir("archive"):
+        shutil.rmtree(os.getcwd() + "/archive")
+
 def buildISO():
     InsDIR = INSTALL_TEMP_PATH + ent_version.get()
     UpdDIR = UPDATE_TEMP_PATH + ent_version.get()
@@ -67,16 +72,19 @@ def buildISO():
     # Build Install CD
     Utility.DeleteTargetFileinConfig("DeleteFile_Install")
     Utility.utMkdir(INSTALL_TEMP_PATH)
-    shutil.make_archive(INSTALL_TEMP_PATH + "/archive", 'zip', "../Python", "bin")  #zip
+    #shutil.make_archive(name, format, archive_from, archive_to)
+    shutil.make_archive(INSTALL_TEMP_PATH + "/archive", 'zip', "archive", "bin")  #zip
     Utility.Dbg_print('Make Install version to: '+ INSTALL_TEMP_PATH + "/archive")
+    Utility.utCheckFilesinFolder("INSTALL")
     Utility.utBuildFolderToISO(INSTALL_TEMP_PATH, InsDIR)
 
 
     # Then Build Update CD, and it will also exclude the file in [DeleteFile_Install] 
     Utility.DeleteTargetFileinConfig("DeleteFile_Update")
     Utility.utMkdir(UPDATE_TEMP_PATH)
-    shutil.make_archive(UPDATE_TEMP_PATH + "/Win10/archive", 'zip', "../Python", "bin")
+    shutil.make_archive(UPDATE_TEMP_PATH + "/Win10/archive", 'zip', "archive", "bin")
     Utility.Dbg_print('Make Update version to: '+ UPDATE_TEMP_PATH + "/Win10/archive")
+    Utility.utCheckFilesinFolder("UPDATE")
     Utility.utBuildFolderToISO(UPDATE_TEMP_PATH, UpdDIR)
     
     frame_step3["bg"] = COLOR_FRAMEBG_OK
@@ -122,6 +130,22 @@ def openfile():
         for line in list_xml:
             fpxml.write(line)
         fpxml.close
+
+        # PE
+        if os.path.isdir(PATH_PEINARCHIVE):
+            shutil.rmtree(os.getcwd() + "/" + PATH_PEINARCHIVE)
+        else:
+            Utility.Dbg_print("Path not exsit: PATH_PEINARCHIVE")
+            return
+        #copy PE in
+        if os.path.isdir(INIT_PATH_PE_SRC):
+            shutil.copytree(INIT_PATH_PE_SRC,PATH_PEINARCHIVE)
+        else:
+            Utility.Dbg_print("Path not exsit: INIT_PATH_PE_SRC")      
+            return  
+
+        # Delete Files in PE (reserved)
+        Utility.DeleteTargetFileinConfig("DeleteFile_PE")
 
         btn_buildVer["state"] = "normal"
         frame_step2["bg"] = COLOR_FRAMEBG_OK
@@ -172,8 +196,9 @@ label_step3.grid(column=0, row=0, ipadx = PADIN+2, ipady = PADIN, padx=PADOUT, p
 btn_buildVer = tk.Button(frame_step3, text="Build Version", bg='white', font=('Arial', 14), command=buildISO)
 btn_buildVer.grid(column=1, row=0, ipadx = PADIN, ipady = PADIN, padx=PADOUT, pady=PADOUT)    
 #btn_buildVer["state"] = "disabled"
-    
 
+btn_delbin = tk.Button(mainWindow, text="Del Bin", bg='white', font=('Arial', 14), command=del_bin)
+btn_delbin.grid(column=1, row=0, padx=10)
 
 if __name__ == '__main__':
     main() 

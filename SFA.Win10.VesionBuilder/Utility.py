@@ -42,6 +42,40 @@ def GetKeyValueinConfig(key, section):
     except Exception as e:
         Dbg_print("GetKeyValueinConfig(): Err" )
 
+def utCheckFilesinFolder(isotype):
+    try:
+        section = "CheckFile_" + isotype
+        target_path = GetKeyValueinConfig(isotype + "_TEMP_PATH", "InitPath") 
+        Dbg_print("")
+        Dbg_print(section)
+        
+        inRightSection = False
+        if os.path.isfile(PATH_CONFIG):
+            with open(PATH_CONFIG, "r") as config:
+                list_config = config.readlines()
+                for line in list_config:
+                    if line[0] == "#" or line[0] == "\n":
+                        continue
+                    elif line[0] == "[":
+                        section_end = line.find("]")
+                        if section == line[1:section_end]:
+                            inRightSection = True
+                        else:
+                            inRightSection = False       
+                    elif inRightSection:
+                        filepath = line[:-1]
+                        if os.path.isfile(target_path + '/' + filepath):
+                            pass
+                        elif os.path.isdir(target_path + '/' + filepath):
+                            pass
+                        else:
+                            Dbg_print("\t(missing) " + target_path + '/' + filepath)
+        else:           
+            Dbg_print("Find no config.ini") 
+        return 
+    except Exception as e:
+        Dbg_print("utCheckFilesinFolder(): Err")
+
 def DeleteTargetFileinConfig(section):
 # Example of config file
 # [section]
@@ -51,6 +85,8 @@ def DeleteTargetFileinConfig(section):
 # output:   value: str, as key's value
 #
     try:
+        Dbg_print("")
+        Dbg_print(section)
         inRightSection = False
         if os.path.isfile(PATH_CONFIG):
             with open(PATH_CONFIG, "r") as config:
@@ -71,7 +107,7 @@ def DeleteTargetFileinConfig(section):
                         elif os.path.isdir(filepath):
                             utDeleFilesinFolder(filepath)
                         else:
-                            Dbg_print("Target delete file is not found")      
+                            Dbg_print("\tTarget delete file is not found: " + filepath)      
         else:           
             Dbg_print("Find no config.ini") 
         return 
@@ -151,6 +187,8 @@ def utBuildFolderToISO(tar_path, iso_name):
 # Build target path into a ISO file
 # input: tar_path: Ex: "bin"
     try:
+        Dbg_print("")
+        Dbg_print("utBuildFolderToISO")
         if not os.path.isdir(tar_path):
             Dbg_print("utBuildFolderToISO(): " + tar_path + " is not a folder.")
             return
