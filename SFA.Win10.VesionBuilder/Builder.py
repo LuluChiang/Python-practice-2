@@ -22,9 +22,10 @@
 #       py -m pip install pyinstaller
 #       UPX is not available: UPX is not available, which means pyinstaller can not find upx.exe to encrypt exe file. 
 #           In order to fix it, we should download upx. Put upx.1 and upx.exe with this project in same path.
-#       Example: "pyinstall -F ./Builder.py
+#       Example: "pyinstaller -F ./Hello.py
 #
-
+# Issue: 
+#   1. line 101: after build to exe, sometimes it crash while calling askopenfilename,
 
 # For GUI
 import tkinter as tk 
