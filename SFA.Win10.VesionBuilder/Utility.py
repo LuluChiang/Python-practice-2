@@ -40,7 +40,7 @@ def GetKeyValueinConfig(key, section):
             Dbg_print("Find no config.ini")  
         return value
     except Exception as e:
-        Dbg_print("GetKeyValueinConfig(): Err" )
+        Dbg_print("GetKeyValueinConfig(): " + str(e))
 
 def utCheckFilesinFolder(isotype):
     try:
@@ -74,7 +74,7 @@ def utCheckFilesinFolder(isotype):
             Dbg_print("Find no config.ini") 
         return 
     except Exception as e:
-        Dbg_print("utCheckFilesinFolder(): Err")
+        Dbg_print("utCheckFilesinFolder(): " + str(e))
 
 def DeleteTargetFileinConfig(section):
 # Example of config file
@@ -112,7 +112,7 @@ def DeleteTargetFileinConfig(section):
             Dbg_print("Find no config.ini") 
         return 
     except Exception as e:
-        Dbg_print("DeleteTargetFileinConfig(): Err")
+        Dbg_print("DeleteTargetFileinConfig(): " + str(e))
 
 
 def GetValueFromAttributeName(element, attr_name):
@@ -180,7 +180,7 @@ def utISO_add_folder(iso, folder_path, des_path = None):
             else:
                 Dbg_print("File err: " + file_path)
     except Exception as e:
-        Dbg_print("utISO_add_folder(): Err" )
+        Dbg_print("utISO_add_folder(): " + str(e))
 
 
 def utBuildFolderToISO(tar_path, iso_name):
@@ -202,7 +202,7 @@ def utBuildFolderToISO(tar_path, iso_name):
         iso.close()
         Dbg_print("Build "+ iso_name + ".iso to: " + tar_path)
     except Exception as e:
-        Dbg_print("utBuildFolderToISO(): Err")
+        Dbg_print("utBuildFolderToISO(): " + str(e))
 
 
 # ***********************

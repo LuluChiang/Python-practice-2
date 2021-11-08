@@ -4,6 +4,8 @@
 # 2. for other customers
 #       => select config
 # 3. UI optimize 
+# 4. catch exception type
+# 5. seperate to more step, and set a "one shot" button for build all
 # 
 #  
 # Module used:
@@ -98,19 +100,21 @@ def buildISO():
 def openfile():
     try:
         # Get archive.zip and unzip 
-        path_archive = filedialog.askopenfilename(parent=mainWindow, initialdir = INIT_PATH_ARCHIVE_ZIP,
-        filetypes = (("zip files","*.zip"),("all files","*.*")))
-        if path_archive == "":
-            Utility.Dbg_print('User select nothing')
-            return
-        else:
-            Utility.Dbg_print('Select: ' + path_archive)
+        # path_archive0 = filedialog.askopenfilename(parent=mainWindow, initialdir = INIT_PATH_ARCHIVE_ZIP,
+        # filetypes = (("zip files","*.zip"),("all files","*.*")))
+        with open(filedialog.askopenfilename(parent=mainWindow, initialdir = INIT_PATH_ARCHIVE_ZIP,
+        filetypes = (("zip files","*.zip"),("all files","*.*"))), encoding='utf-8') as path_archive:
+            if path_archive == "":
+                Utility.Dbg_print('User select nothing')
+                return
+            else:
+                Utility.Dbg_print('Select: ' + path_archive.name)
 
-        # delete bin
-        if os.path.isdir("bin"):
-            shutil.rmtree(os.getcwd() + "/bin")
+            # delete bin
+            if os.path.isdir("bin"):
+                shutil.rmtree(os.getcwd() + "/bin")
 
-        zip_func.fileunzip(path_archive)
+            zip_func.fileunzip(path_archive.name)
 
         # Set version number in ApplicationInfoConfig.xml
         path_versionxml = os.getcwd() + Utility.GetKeyValueinConfig("VERSION_XML", "InitPath")
@@ -153,7 +157,7 @@ def openfile():
         Utility.Dbg_print("Set version number ok.")
         return
     except Exception as e:
-        Utility.Dbg_print("openfile(): Err")
+        Utility.Dbg_print("openfile(): " + str(e))
 
 
 PADIN = 5
