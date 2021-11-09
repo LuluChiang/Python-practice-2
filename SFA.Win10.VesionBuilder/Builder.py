@@ -117,26 +117,28 @@ def openfile():
             zip_func.fileunzip(path_archive.name)
 
         # Set version number in ApplicationInfoConfig.xml
+        Utility.Dbg_print('Set Version...')
         path_versionxml = os.getcwd() + Utility.GetKeyValueinConfig("VERSION_XML", "InitPath")
         if not os.path.isfile(path_versionxml):
             Utility.Dbg_print("Find no ApplicationInfoConfig.xml, please check the archive.")
             return
             
-        fpxml = open(path_versionxml, "r")
-        list_xml = fpxml.readlines()
-        for line in list_xml:        
-            if line.find("Name=\"ApplicationVersion\"") != -1:
-                ori_version = Utility.GetValueFromAttributeName(line, "Value")
-                line = line.replace(ori_version, ent_version.get())
-                list_xml[6] = line
-        fpxml.close        
+        with open(path_versionxml, "r", encoding='utf-8') as fpxml:
+            list_xml = fpxml.readlines()
+            for line in list_xml:        
+                if line.find("Name=\"ApplicationVersion\"") != -1:
+                    ori_version = Utility.GetValueFromAttributeName(line, "Value")
+                    line = line.replace(ori_version, ent_version.get())
+                    list_xml[6] = line
     
-        fpxml = open(path_versionxml, "w")
-        for line in list_xml:
-            fpxml.write(line)
-        fpxml.close
+    
+        with open(path_versionxml, "w", encoding='utf-8') as fpxml:
+            for line in list_xml:
+                fpxml.write(line)
+        # fpxml.close
 
         # PE
+        Utility.Dbg_print("Copy PE...")
         if os.path.isdir(PATH_PEINARCHIVE):
             shutil.rmtree(os.getcwd() + "/" + PATH_PEINARCHIVE)
         else:
